@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using StickerApp.Misc;
 using StickerApp.Responses;
 using StickerApp.Services;
 
 namespace StickerApp.Controllers
 {
-    [Route("stickers")]
+    [Route("v1/stickers")]
     public class StickersController : Controller
     {
         private readonly ILogger<StickersController> _log;
@@ -22,16 +23,24 @@ namespace StickerApp.Controllers
             _log = logger;
         }
 
-        // GET api/stickers
+        /// <summary>
+        /// Get a list of stickers.
+        /// </summary>
+        /// <remarks>
+        /// You can query with an offset and a limit if you want.
+        /// </remarks>
+        /// <param name="limit">Maximum number of stickers.</param>
+        /// <param name="offset">Skip certain number of stickers, used for pagingnation.</param>
+        /// <returns>A task of <see cref="StickerListResponse"/>.</returns>
+        /// <response code="200">Returns a list of stickers.</response>
         [HttpGet]
-        [ServiceFilter(typeof(TokenCheckingFilter))]
-        public async Task<JsonResult> GetList([FromQuery] int limit = 10, [FromQuery] int offset = 0)
+        [ProducesResponseType(typeof(StickerListResponse), 200)]
+        public async Task<StickerListResponse> GetList([FromQuery] int limit = 10, [FromQuery] int offset = 0)
         {
             var stickers = await _db.Stickers.Skip(offset).Take(limit).ToListAsync();
             _log.LogInformation($"Return {stickers.Count} stickers to user.");
             var response = new StickerListResponse() { Stickers = stickers};
-            var jsonResponse = Json(response);
-            return jsonResponse;
+            return response;
         }
 
         // GET api/stickers/5
@@ -43,6 +52,7 @@ namespace StickerApp.Controllers
 
         // POST api/stickers
         [HttpPost]
+        [CheckToken]
         public void Post([FromBody] string value)
         {
         }

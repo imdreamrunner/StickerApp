@@ -16,7 +16,7 @@ namespace StickerApp
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
-                .UseUrls("http://127.0.0.1:1024")
+                .UseUrls("http://0.0.0.0:1024")
                 .Build();
 
             host.Run();

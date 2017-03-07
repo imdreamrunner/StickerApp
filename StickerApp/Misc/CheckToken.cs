@@ -1,17 +1,25 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using StickerApp.Responses;
 
-namespace StickerApp.Services
+namespace StickerApp.Misc
 {
-    public class TokenCheckingFilter : ActionFilterAttribute
+    public class CheckTokenAttribute : ServiceFilterAttribute
+    {
+        public CheckTokenAttribute() : base(typeof(TokenCheckingFilterAttribute))
+        {
+        }
+    }
+
+    public class TokenCheckingFilterAttribute : ActionFilterAttribute
     {
         private readonly ApplicationConfiguration _config;
 
 
-        public TokenCheckingFilter(IOptions<ApplicationConfiguration> applicationConfigiration)
+        public TokenCheckingFilterAttribute(IOptions<ApplicationConfiguration> applicationConfigiration)
         {
             _config = applicationConfigiration.Value;
         }
@@ -19,15 +27,7 @@ namespace StickerApp.Services
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             string token = null;
-            if (context.HttpContext.Request.Query.ContainsKey("token"))
-            {
-                token = context.HttpContext.Request.Query["token"];
-            }
-            else if (context.HttpContext.Request.Form.ContainsKey("token"))
-            {
-                token = context.HttpContext.Request.Form["token"];
-            }
-            else if (context.HttpContext.Request.Headers.ContainsKey("token"))
+            if (context.HttpContext.Request.Headers.ContainsKey("token"))
             {
                 token = context.HttpContext.Request.Headers["token"];
             }
