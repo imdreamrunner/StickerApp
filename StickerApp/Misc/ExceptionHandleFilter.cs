@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
@@ -12,12 +13,10 @@ namespace StickerApp.Misc
     {
         public ExceptionHandleFilter()
         {
-            Console.Write("ExceptionHandleFilter.");
         }
 
         public void OnException(ExceptionContext context)
         {
-            Console.Write("On Exception.");
             var code = HttpStatusCode.InternalServerError;
             var response = new ErrorResponse("InternalServerError");
 
@@ -29,10 +28,11 @@ namespace StickerApp.Misc
                 response.Reason = appException.Reason;
             }
 
-            var responseJson = JsonConvert.SerializeObject(response);
-            context.Result = new JsonResult(responseJson);
             context.HttpContext.Response.StatusCode = (int) code;
-            context.ExceptionHandled = true;
+            context.Result = new JsonResult(response);
+            // context.ExceptionHandled = true;
+            // Cannot set ExceptionHandled = true, otherwise the response content is empty.
+            // Check http://stackoverflow.com/questions/5205325/how-to-return-json-result-from-a-custom-exception-filter
         }
     }
 

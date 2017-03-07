@@ -1,6 +1,6 @@
 ﻿namespace StickerApp.ApiModels
 {
-    public class SuccessResponse
+    public class SuccessResponse : ApiResponse
     {
         public readonly string Error = null;
     }

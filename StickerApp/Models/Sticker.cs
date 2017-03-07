@@ -53,7 +53,7 @@ namespace StickerApp.Models
                 }
                 else
                 {
-//                    throw new StickerAppException("InvalidStickerType");
+                    throw new StickerAppException("InvalidStickerType");
                 }
             }
         }

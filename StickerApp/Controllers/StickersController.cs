@@ -56,9 +56,10 @@ namespace StickerApp.Controllers
         /// </summary>
         [HttpPost]
         [CheckToken]
-        public async void Post([FromBody] StickerAddRequest request)
+        [ProducesResponseType(typeof(SuccessResponse), 200)]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
+        public async Task<ApiResponse> Post([FromBody] StickerAddRequest request)
         {
-            throw new StickerAppException("TestException");
             var sticker = new Sticker
             {
                 Name = request.Name,
@@ -69,6 +70,7 @@ namespace StickerApp.Controllers
             };
             _db.Stickers.Add(sticker);
             await _db.SaveChangesAsync();
+            return new SuccessResponse();
         }
 
         // PUT api/stickers/5

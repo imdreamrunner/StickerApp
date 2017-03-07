@@ -1,6 +1,6 @@
 ﻿namespace StickerApp.ApiModels
 {
-    public class ErrorResponse
+    public class ErrorResponse : ApiResponse
     {
         public ErrorResponse(string error, string reason = null)
         {

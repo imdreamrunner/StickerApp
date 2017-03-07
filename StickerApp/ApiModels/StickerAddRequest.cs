@@ -1,7 +1,10 @@
-﻿namespace StickerApp.ApiModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace StickerApp.ApiModels
 {
     public class StickerAddRequest
     {
+        [Required]
         public string Name;
 
         public string Description;
