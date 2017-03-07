@@ -77,7 +77,13 @@ namespace StickerApp
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
+
             app.UseMvc();
+
+            app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseSwagger();
 
