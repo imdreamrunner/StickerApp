@@ -1,4 +1,4 @@
-﻿namespace StickerApp.Responses
+﻿namespace StickerApp.ApiModels
 {
     public class SuccessResponse
     {

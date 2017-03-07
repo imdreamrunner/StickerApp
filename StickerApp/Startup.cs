@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Diagnostics;
 using MySQL.Data.Entity.Extensions;
 using StickerApp.Misc;
 using StickerApp.Services;
@@ -44,10 +46,13 @@ namespace StickerApp
             var connection = Configuration["DatabaseConnection"];
             services.AddDbContext<Database>(options => options.UseMySQL(connection));
 
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ExceptionHandleFilter));
+            });
+
             // Add token checking filter here so that it can read the application's configuration by dependency injection.
             services.AddScoped<TokenCheckingFilterAttribute>();
-
-            services.AddMvc();
 
             services.AddSwaggerGen(c =>
             {
@@ -67,6 +72,11 @@ namespace StickerApp
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
             app.UseMvc();
 
             app.UseSwagger();
@@ -75,6 +85,7 @@ namespace StickerApp
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "StickerApp API V1");
                 c.ShowRequestHeaders();
+                c.ShowJsonEditor();
             });
         }
     }

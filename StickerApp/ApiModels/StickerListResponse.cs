@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using StickerApp.Models;
 
-namespace StickerApp.Responses
+namespace StickerApp.ApiModels
 {
     public class StickerListResponse : SuccessResponse
     {

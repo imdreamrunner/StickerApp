@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using StickerApp.ApiModels;
 using StickerApp.Misc;
-using StickerApp.Responses;
+using StickerApp.Models;
 using StickerApp.Services;
 
 namespace StickerApp.Controllers
@@ -50,11 +51,24 @@ namespace StickerApp.Controllers
             return "value";
         }
 
-        // POST api/stickers
+        /// <summary>
+        /// Create new sticker.
+        /// </summary>
         [HttpPost]
         [CheckToken]
-        public void Post([FromBody] string value)
+        public async void Post([FromBody] StickerAddRequest request)
         {
+            throw new StickerAppException("TestException");
+            var sticker = new Sticker
+            {
+                Name = request.Name,
+                Description = request.Description,
+                StickerTypeString = request.Type,
+                Tags = request.Tags,
+                Author = request.Author
+            };
+            _db.Stickers.Add(sticker);
+            await _db.SaveChangesAsync();
         }
 
         // PUT api/stickers/5
