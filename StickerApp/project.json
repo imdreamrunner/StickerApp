@@ -14,7 +14,7 @@
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
     "Microsoft.NETCore.App": {
-      "version": "1.1.0",
+      "version": "1.1.1",
       "type": "platform"
     },
     "SapientGuardian.EntityFrameworkCore.MySql": "7.1.19",
@@ -24,7 +24,7 @@
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   },
   "frameworks": {
-    "netcoreapp1.0": {
+    "netcoreapp1.1": {
       "imports": [
         "dotnet5.6",
         "portable-net45+win8"
