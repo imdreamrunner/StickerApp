@@ -58,15 +58,15 @@ namespace StickerApp.Controllers
         [CheckToken]
         [ProducesResponseType(typeof(SuccessResponse), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
-        public async Task<ApiResponse> Post([FromBody] StickerAddRequest request)
+        public async Task<ApiResponse> Post([FromBody] StickerAddRequest newSticker)
         {
             var sticker = new Sticker
             {
-                Name = request.Name,
-                Description = request.Description,
-                StickerTypeString = request.Type,
-                Tags = request.Tags,
-                Author = request.Author
+                Name = newSticker.Name,
+                Description = newSticker.Description,
+                StickerTypeString = newSticker.Type,
+                Tags = newSticker.Tags,
+                Author = newSticker.Author
             };
             _db.Stickers.Add(sticker);
             await _db.SaveChangesAsync();

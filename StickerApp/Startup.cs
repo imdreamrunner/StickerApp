@@ -1,16 +1,17 @@
 using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.AspNetCore.Diagnostics;
 using MySQL.Data.Entity.Extensions;
+using Swashbuckle.AspNetCore.Swagger;
+
 using StickerApp.Misc;
 using StickerApp.Services;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace StickerApp
 {
@@ -54,15 +55,15 @@ namespace StickerApp
             // Add token checking filter here so that it can read the application's configuration by dependency injection.
             services.AddScoped<TokenCheckingFilterAttribute>();
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(config =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "StickerApp API", Version = "v1" });
-                c.OperationFilter<AuthResponsesSwaggerOperationFilter>();
-                c.OperationFilter<JsonResponseSwaggerOperationFilter>();
+                config.SwaggerDoc("v1", new Info { Title = "StickerApp API", Version = "v1" });
+                config.OperationFilter<AuthResponsesSwaggerOperationFilter>();
+                config.OperationFilter<JsonResponseSwaggerOperationFilter>();
                 // Set the comments path for the swagger json and ui.
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
                 var xmlPath = Path.Combine(basePath, "StickerApp.xml");
-                c.IncludeXmlComments(xmlPath);
+                config.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -81,11 +82,11 @@ namespace StickerApp
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
+            app.UseSwaggerUI(config =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "StickerApp API V1");
-                c.ShowRequestHeaders();
-                c.ShowJsonEditor();
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "StickerApp API V1");
+                config.ShowRequestHeaders();
+                config.ShowJsonEditor();
             });
         }
     }
