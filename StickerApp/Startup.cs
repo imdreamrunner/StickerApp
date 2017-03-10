@@ -45,7 +45,7 @@ namespace StickerApp
             services.Configure<ApplicationConfiguration>(Configuration);
 
             var connection = Configuration["DatabaseConnection"];
-            services.AddDbContext<Database>(options => options.UseMySQL(connection));
+            services.AddDbContext<StickerDb>(options => options.UseMySQL(connection));
 
             services.AddMvc(options =>
             {

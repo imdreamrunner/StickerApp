@@ -16,9 +16,9 @@ namespace StickerApp.Controllers
     public class StickersController : AppController
     {
         private readonly ILogger<StickersController> _log;
-        private readonly Database _db;
+        private readonly StickerDb _db;
 
-        public StickersController(Database database, ILogger<StickersController> logger)
+        public StickersController(StickerDb database, ILogger<StickersController> logger)
         {
             _db = database;
             _log = logger;

@@ -3,11 +3,12 @@ using StickerApp.Models;
 
 namespace StickerApp.Services
 {
-    public class Database : DbContext
+    public class StickerDb : DbContext
     {
-        public Database(DbContextOptions options) : base(options) {}
+        public StickerDb(DbContextOptions options) : base(options) {}
 
         public DbSet<Sticker> Stickers { get; set; }
+        public DbSet<Collection> Collections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
