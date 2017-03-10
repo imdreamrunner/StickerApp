@@ -13,7 +13,7 @@ using StickerApp.Services;
 namespace StickerApp.Controllers
 {
     [Route("v1/stickers")]
-    public class StickersController : Controller
+    public class StickersController : AppController
     {
         private readonly ILogger<StickersController> _log;
         private readonly Database _db;
@@ -81,10 +81,7 @@ namespace StickerApp.Controllers
             TryValidateModel(stickerModel);
             if (!ModelState.IsValid)
             {
-                var errors = string.Join(", ", ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                throw new StickerAppException("InvalidSticker", errors);
+                throw GenerateModelStateException("InvalidSticker");
             }
             _db.Stickers.Add(stickerModel);
             await _db.SaveChangesAsync();

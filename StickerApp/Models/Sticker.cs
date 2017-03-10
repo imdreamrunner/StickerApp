@@ -48,7 +48,7 @@ namespace StickerApp.Models
             }
         }
 
-        [JsonProperty("type"), NotMapped]
+        [JsonProperty("type"), NotMapped, StringLength(3, MinimumLength = 3)]
         public string StickerTypeString
         {
             get
