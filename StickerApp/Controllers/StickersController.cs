@@ -44,45 +44,92 @@ namespace StickerApp.Controllers
             return response;
         }
 
-        // GET api/stickers/5
+        /// <summary>
+        /// Get a Single sticker.
+        /// </summary>
+        /// <param name="id">Reqiested sticker ID.</param>
+        /// <returns>The requested sticker.</returns>
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<SingleStickerResponse> Get(int id)
         {
-            return "value";
+            var sticker = await _db.Stickers.Where(s => s.StickerId == id).FirstOrDefaultAsync();
+            if (sticker == null)
+            {
+                throw new StickerAppException("StickerNotFound");
+            }
+            return new SingleStickerResponse(sticker);
         }
 
         /// <summary>
         /// Create new sticker.
         /// </summary>
+        /// <response code="200">Return the created sticker.</response>
         [HttpPost]
         [CheckToken]
-        [ProducesResponseType(typeof(SuccessResponse), 200)]
+        [ProducesResponseType(typeof(SingleStickerResponse), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
-        public async Task<ApiResponse> Post([FromBody] StickerAddRequest newSticker)
+        public async Task<ApiResponse> Post([FromBody] StickerAddRequest stickerData)
         {
-            var sticker = new Sticker
+            var stickerModel = new Sticker
             {
-                Name = newSticker.Name,
-                Description = newSticker.Description,
-                StickerTypeString = newSticker.Type,
-                Tags = newSticker.Tags,
-                Author = newSticker.Author
+                Name = stickerData.Name,
+                Description = stickerData.Description,
+                StickerTypeString = stickerData.Type,
+                Tags = stickerData.Tags,
+                Author = stickerData.Author
             };
-            _db.Stickers.Add(sticker);
+            TryValidateModel(stickerModel);
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(", ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                throw new StickerAppException("InvalidSticker", errors);
+            }
+            _db.Stickers.Add(stickerModel);
+            await _db.SaveChangesAsync();
+            return new SingleStickerResponse(stickerModel);
+        }
+
+        /// <summary>
+        /// Update a sticker
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="stickerData"></param>
+        [HttpPut("{id}")]
+        public async Task<ApiResponse> Put(int id, [FromBody] StickerAddRequest stickerData)
+        {
+            var stickerModel = await _db.Stickers.Where(s => s.StickerId == id).FirstOrDefaultAsync();
+            if (stickerModel == null)
+            {
+                throw new StickerAppException("StickerNotFound");
+            }
+            stickerModel.Name = stickerData.Name;
+            stickerModel.Description = stickerData.Description;
+            stickerModel.StickerTypeString = stickerData.Type;
+            stickerModel.Tags = stickerData.Tags;
+            stickerModel.Author = stickerData.Author;
+            _db.Stickers.Update(stickerModel);
+            await _db.SaveChangesAsync();
+            return new SingleStickerResponse(stickerModel);
+        }
+
+        /// <summary>
+        /// Delete a sticker.
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpDelete("{id}")]
+        [CheckToken]
+        public async Task<ApiResponse> Delete(int id)
+        {
+            var sticker = await _db.Stickers.Where(s => s.StickerId == id).FirstOrDefaultAsync();
+            if (sticker == null)
+            {
+                throw new StickerAppException("StickerNotFound");
+            }
+            _db.Stickers.Remove(sticker);
             await _db.SaveChangesAsync();
             return new SuccessResponse();
-        }
-
-        // PUT api/stickers/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/stickers/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

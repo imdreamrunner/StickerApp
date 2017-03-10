@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 using StickerApp.Misc;
@@ -14,27 +15,40 @@ namespace StickerApp.Models
 
         public long StickerId { get; set; }
 
+        [Required, StringLength(10, MinimumLength = 5)]
         public string Name { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore, Required]
         public int Type { get; set; }
 
-        [JsonIgnore]
-        [NotMapped]
+        [JsonIgnore, NotMapped]
         public Constants.StickerType StickerType
         {
             get
             {
-                return (Constants.StickerType) this.Type;
+                if (Enum.IsDefined(typeof(Constants.StickerType), this.Type))
+                {
+                    return (Constants.StickerType) this.Type;
+                }
+                else
+                {
+                    throw new StickerAppException("InvalidStickerType");
+                }
             }
             set
             {
-                Type = (int) value;
+                if (Enum.IsDefined(typeof(Constants.StickerType), (int) value))
+                {
+                    Type = (int) value;
+                }
+                else
+                {
+                    throw new StickerAppException("InvalidStickerType");
+                }
             }
         }
 
-        [JsonProperty("type")]
-        [NotMapped]
+        [JsonProperty("type"), NotMapped]
         public string StickerTypeString
         {
             get
@@ -49,7 +63,7 @@ namespace StickerApp.Models
                 var parseSuccess = Enum.TryParse(value, true, out type);
                 if (parseSuccess)
                 {
-                    this.Type = (int) type;
+                    this.StickerType = type;
                 }
                 else
                 {
