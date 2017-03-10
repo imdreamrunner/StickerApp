@@ -7,8 +7,15 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace StickerApp
 {
+    /// <summary>
+    /// Entry class for Kestrel served application.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Entry point for Kerstrel served application.
+        /// </summary>
+        /// <param name="args">Command line arguments.</param>
         public static void Main(string[] args)
         {
             var host = new WebHostBuilder()
