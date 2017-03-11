@@ -8,6 +8,9 @@ namespace StickerApp.Misc
         public readonly string Reason;
         public readonly int? SuggestedHttpErrorCode;
 
+        /// <summary>
+        /// Constructor for StickerAppException.
+        /// </summary>
         public StickerAppException(string error, string reason = null, int? suggestedHttpErrorCode = null)
         {
             Error = error;
