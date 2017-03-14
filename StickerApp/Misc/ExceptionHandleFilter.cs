@@ -27,6 +27,10 @@ namespace StickerApp.Misc
                 response.Error = appException.Error;
                 response.Reason = appException.Reason;
             }
+            else
+            {
+                response.Reason = context.Exception.ToString() + ": " + context.Exception.StackTrace;
+            }
 
             context.HttpContext.Response.StatusCode = (int) code;
             context.Result = new JsonResult(response);

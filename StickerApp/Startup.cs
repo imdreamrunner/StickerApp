@@ -17,8 +17,12 @@ namespace StickerApp
 {
     public class Startup
     {
+        private IHostingEnvironment CurrentEnvironment;
+
         public Startup(IHostingEnvironment env)
         {
+            CurrentEnvironment = env;
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -58,16 +62,20 @@ namespace StickerApp
             // Add token checking filter here so that it can read the application's configuration by dependency injection.
             services.AddScoped<TokenCheckingFilterAttribute>();
 
-            services.AddSwaggerGen(config =>
+            if (CurrentEnvironment.IsDevelopment())
             {
-                config.SwaggerDoc("v1", new Info { Title = "StickerApp API", Version = "v1" });
-                config.OperationFilter<AuthResponsesSwaggerOperationFilter>();
-                config.OperationFilter<JsonResponseSwaggerOperationFilter>();
-                // Set the comments path for the swagger json and ui.
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "StickerApp.xml");
-                config.IncludeXmlComments(xmlPath);
-            });
+                services.AddSwaggerGen(config =>
+                {
+                    config.SwaggerDoc("v1", new Info { Title = "StickerApp API", Version = "v1" });
+                    config.OperationFilter<AuthResponsesSwaggerOperationFilter>();
+                    config.OperationFilter<JsonResponseSwaggerOperationFilter>();
+                    // Set the comments path for the swagger json and ui.
+                    var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                    var xmlPath = Path.Combine(basePath, "StickerApp.xml");
+                    config.IncludeXmlComments(xmlPath);
+                });
+            }
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -79,18 +87,19 @@ namespace StickerApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+
+                app.UseSwaggerUI(config =>
+                {
+                    config.SwaggerEndpoint("/swagger/v1/swagger.json", "StickerApp API V1");
+                    config.ShowRequestHeaders();
+                    config.ShowJsonEditor();
+                });
             }
 
             app.UseMvc();
 
-            app.UseSwagger();
-
-            app.UseSwaggerUI(config =>
-            {
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "StickerApp API V1");
-                config.ShowRequestHeaders();
-                config.ShowJsonEditor();
-            });
         }
     }
 }

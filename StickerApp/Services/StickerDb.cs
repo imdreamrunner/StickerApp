@@ -13,6 +13,13 @@ namespace StickerApp.Services
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            foreach (var entity in builder.Model.GetEntityTypes())
+            {
+                var lastDot = entity.Name.LastIndexOf(".");
+                var tableName = entity.Name.Substring(lastDot + 1).ToLower();
+                entity.Relational().TableName = tableName;
+            }
         }
     }
 }
